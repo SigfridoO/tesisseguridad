@@ -48,7 +48,7 @@ Serial.write(" ,");
  /////////////////////Codigo para control del programa
 
 Y[0]=0;
-
+Y[1]=X[1];
 
 actualizarPines();
 
