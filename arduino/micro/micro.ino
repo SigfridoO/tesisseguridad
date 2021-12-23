@@ -33,7 +33,7 @@ void setup() {
 
    /////////////////////Codigo para inicializar puertos de comunicación
    Serial.begin(9600);
-M[2]=1; // 1=Usuario fuera, 0=Usuario dentro
+M[2]=0; // 0=Usuario fuera, 1=Usuario dentro
 M[12]=0; // 1=Encendido módo manual, 0= Apagado modo manual
 
 }
@@ -54,6 +54,8 @@ Serial.write(" ,");
 M[1]=X[0] & (~M[2] | M[12]);
 Serial.print("M[1]= ");
 Serial.print(M[1]);
+Serial.print("X[0]= ");
+Serial.print(X[0]);
 Serial.println();
 
 actualizarPines();
