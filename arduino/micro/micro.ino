@@ -13,6 +13,7 @@ int do_2=13;
 //[]
 byte X[6];
 byte Y[3];
+byte M[50];
 //SOLO UNA EJECUCIÓN
 void setup() {
 //Lectura de entradas
@@ -32,23 +33,28 @@ void setup() {
 
    /////////////////////Codigo para inicializar puertos de comunicación
    Serial.begin(9600);
+M[2]=1; // 1=Usuario fuera, 0=Usuario dentro
+M[12]=0; // 1=Encendido módo manual, 0= Apagado modo manual
 
 }
 
 void loop() {
- for(int i=0;i<6;i++){
+ /*for(int i=0;i<6;i++){
 Serial.print(X[i]);
 if(i==5){
 Serial.println();
 }
 Serial.write(" ,");
- }
+ }*/
 
 
  /////////////////////Codigo para control del programa
 
-Y[0]=0;
-Y[1]=X[1];
+
+M[1]=X[0] & (~M[2] | M[12]);
+Serial.print("M[1]= ");
+Serial.print(M[1]);
+Serial.println();
 
 actualizarPines();
 
