@@ -35,6 +35,9 @@ void setup() {
    Serial.begin(9600);
 M[2]=0; // 0=Usuario fuera, 1=Usuario dentro
 M[12]=0; // 1=Encendido módo manual, 0= Apagado modo manual
+M[10]=0; // Activación por alarma programada, 1=Encendido y 0=Apagado
+//M[6]= Activación de serraduras, Acción de control
+
 
 }
 
@@ -52,11 +55,18 @@ Serial.write(" ,");
 
 
 M[1]=X[0] & (~M[2] | M[12]);
+M[6]=(((M[1] | M[6])  & ~M[2]) | M[10]) & ~M[12];
+
 Serial.print("M[1]= ");
 Serial.print(M[1]);
 Serial.print("X[0]= ");
 Serial.print(X[0]);
+Serial.print("M[6]= ");
+Serial.print(M[6]);
 Serial.println();
+
+
+
 
 actualizarPines();
 
