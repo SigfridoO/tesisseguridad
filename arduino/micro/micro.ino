@@ -34,9 +34,11 @@ void setup() {
    /////////////////////Codigo para inicializar puertos de comunicación
    Serial.begin(9600);
 M[2]=0; // 0=Usuario fuera, 1=Usuario dentro
-M[12]=0; // 1=Encendido módo manual, 0= Apagado modo manual
+//M[3]=0; // 1=Encendido módo manual, 0= Apagado modo manual
 M[10]=0; // Activación por alarma programada, 1=Encendido y 0=Apagado
+M[5]=0; //Mensaje de alarma
 //M[6]= Activación de serraduras, Acción de control
+//M[7]= Botón de Apagado de Alarma
 
 
 }
@@ -53,10 +55,14 @@ Serial.write(" ,");
 
  /////////////////////Codigo para control del programa
 
+M[3]=X[1];
+M[7]=X[2];
+M[1]=X[0] & (!M[2] | M[3]);
+M[4]=(M[1] | M[4]) & !M[2] & !M[3];
+//M[5]= M[4] & M[1];
+M[6]= M[4] & !M[5] & !M[1] & !M[7];
 
-M[1]=I[0] & (!M[2] | M[3]);
-M[4]=(M[1] | M4[4]) & !M[2] & !M[3];
-M[5]= M[4] & M[1];
+/*
 M[4]=(M[1] | M4[4]) & !M[2] & !M[3];
 //Contador
 if(i>=1){
@@ -65,15 +71,16 @@ M[6]= !M[5] & !M[1];
 M[8]=M[6] & !M[7];
 //M[10]= TOF1.Q
 Q[0]= !M[2] | M[3];
-M[3]= (M[11] | M[3] | M[10]) & !M[12];
+M[3]= (M[11] | M[3] | M[10]) & !M[12];*/
 
 
-
-Serial.print("M[1]= ");
-Serial.print(M[1]);
-Serial.print("X[0]= ");
+Serial.print(" X[0]= ");
 Serial.print(X[0]);
-Serial.print("M[6]= ");
+Serial.print(" M[1]= ");
+Serial.print(M[1]);
+Serial.print(" M[4]= ");
+Serial.print(M[4]);
+Serial.print(" M[6]= ");
 Serial.print(M[6]);
 Serial.println();
 
