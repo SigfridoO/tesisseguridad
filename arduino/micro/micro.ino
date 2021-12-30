@@ -11,9 +11,9 @@ int do_0=11;
 int do_1=12;
 int do_2=13;
 //[]
-byte X[6];
-byte Y[3];
-byte M[50];
+byte X[8];
+byte Y[8];
+byte M[48];
 //SOLO UNA EJECUCIÓN
 void setup() {
 //Lectura de entradas
@@ -39,9 +39,27 @@ M[10]=0; // Activación por alarma programada, 1=Encendido y 0=Apagado
 M[5]=0; //Mensaje de alarma
 //M[6]= Activación de serraduras, Acción de control
 //M[7]= Botón de Apagado de Alarma
+//M[1]-M[7]= IDENTIFICACIÓN
+//M[8]-M[15]= SALIDA DE ALARMAS
+
 
 
 }
+
+char* enviarAlarmas(){
+
+char Mensaje[64];
+return Mensaje;
+}
+
+
+void apagarAlarma{
+
+M[3]=1;
+
+  
+}
+
 
 void loop() {
  /*for(int i=0;i<6;i++){
@@ -60,7 +78,12 @@ M[7]=X[2];
 M[1]=X[0] & (!M[2] | M[3]);
 M[4]=(M[1] | M[4]) & !M[2] & !M[3];
 //M[5]= M[4] & M[1];
-M[6]= M[4] & !M[5] & !M[1] & !M[7];
+M[8]=M[4] & !M[5] & !M[1] & !M[7];
+//
+
+if(M[4]==1){
+Y[0]=M[8];
+}
 
 /*
 M[4]=(M[1] | M4[4]) & !M[2] & !M[3];
