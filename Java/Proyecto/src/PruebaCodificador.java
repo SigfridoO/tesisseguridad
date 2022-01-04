@@ -1,3 +1,5 @@
+package org.siez.comunicacion;
+
 public class PruebaCodificador {
     public static void main(String[] args) {
         Codificador codificador = new Codificador();

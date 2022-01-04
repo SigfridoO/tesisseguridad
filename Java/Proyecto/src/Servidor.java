@@ -18,6 +18,7 @@ public class Servidor {
                 DatagramPacket peticion =new DatagramPacket(bufer, bufer.length);
 
                 // Leemos una petición del DatagramSocket
+                System.out.println("Esperando una conexiones >>");
                 socketUDP.receive(peticion);
                 String mensaje= new String(peticion.getData());
                 System.out.println(mensaje);

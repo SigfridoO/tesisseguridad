@@ -5,13 +5,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
 
 public class Cliente {
 
-
     private DatagramSocket socket = null;
-    private String hostServidor = "192.168.1.70"; //Arduino
+    private String hostServidor = "192.168.0.4"; //Arduino
     private int puertoServidor = 1234; //Seleccionar Puerto
 
     Cliente() {

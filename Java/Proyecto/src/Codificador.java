@@ -1,3 +1,5 @@
+package org.siez.comunicacion;
+
 public class Codificador {
 
     public static final String ACTIVAR_ALARMA="%1A2";
