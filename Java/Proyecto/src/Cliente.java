@@ -9,7 +9,7 @@ import java.net.SocketException;
 public class Cliente {
 
     private DatagramSocket socket = null;
-    private String hostServidor = "192.168.0.4"; //Arduino
+    private String hostServidor = "192.168.1.75"; //Arduino
     private int puertoServidor = 1234; //Seleccionar Puerto
 
     Cliente() {
