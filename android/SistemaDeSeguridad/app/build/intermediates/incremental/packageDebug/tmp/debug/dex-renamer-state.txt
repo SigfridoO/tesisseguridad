@@ -1,4 +1,4 @@
-#Sat Jan 08 21:56:34 CST 2022
+#Wed Jan 12 23:19:00 CST 2022
 base.2=/media/sigy/DOCUMENTOS/PROYECTOS/ASESORIAS/RED DE CONTROL/tesisseguridad/android/SistemaDeSeguridad/app/build/intermediates/dex/debug/mergeProjectDexDebug/7/classes.dex
 path.2=7/classes.dex
 base.1=/media/sigy/DOCUMENTOS/PROYECTOS/ASESORIAS/RED DE CONTROL/tesisseguridad/android/SistemaDeSeguridad/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
