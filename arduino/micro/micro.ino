@@ -24,6 +24,10 @@ byte Y[8];
 byte M[48];
 
 
+const char instrucion_1 = 'h';     // enviarTodaslas alarmas
+const char instrucion_2 = 'f';
+
+
 
 //SOLO UNA EJECUCIÓN
 void setup() {
@@ -165,17 +169,16 @@ void leerAlmacenarSerie () {
 }
 
 void decodificarInstrucion() {
-
-
-  
-    Serial.print(">");
+ 
+  Serial.print(">");
   for(int i = 0; i< TAMANIO_BUFFER;i++){
     Serial.print(bufferLectura[i]);
   }
   Serial.print("<");
   Serial.println();
 
-
+  char instrucion = 0;
+  
   for (int i = 0; i < indiceBuffer; i++) {
     // buscar caracter de inicio
     // caracter de final
@@ -186,18 +189,33 @@ void decodificarInstrucion() {
     // hacer una serie de comparaciones para obtener la instruccion
     
 
-    switch(instruccion) {
+    instrucion = 'h';
+    
+  }
 
-      case instruccion_1: 
+
+     switch(instrucion) {
+
+      case instrucion_1: 
         funcion_1();
         break;
         
-      case instruccion_1: 
+      case instrucion_2: 
         funcion_2();
         break;
     
     }
-    
-  }
   
+}
+
+
+void funcion_1(){
+  
+;
+}
+
+
+void funcion_2(){
+  
+;
 }
