@@ -44,14 +44,20 @@ void setup() {
 
    /////////////////////Codigo para inicializar puertos de comunicación
    Serial.begin(9600);
-  M[2]=0; // 0=Usuario fuera, 1=Usuario dentro
-  //M[3]=0; // 1=Encendido módo manual, 0= Apagado modo manual
-  M[10]=0; // Activación por alarma programada, 1=Encendido y 0=Apagado
-  M[5]=0; //Mensaje de alarma
-  //M[6]= Activación de serraduras, Acción de control
-  //M[7]= Botón de Apagado de Alarma
-  //M[1]-M[7]= IDENTIFICACIÓN
-  //M[8]-M[15]= SALIDA DE ALARMAS
+//M[1]=Identificación de entrada 1 --> Respuesta (%=Abierto y *Cerrado)
+M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
+//M[3]=0; // 1=Encendido módo manual, 0= Apagado modo manual --> Señal de encenddido manual --> Petisión #_%1A24&
+//I0=Interruptor electromágnetico del zaguan --> *
+//M4=Encendido del sistema --> Fisico #_%1A24&
+M[5]=0; //Mensaje de activación a la aplicación
+//M[6]=Activación de alarma y mensaje a la aplicación
+//M[8]=Llamada de emergencia
+//M[9]=Botón para activación de alarma programada
+M[10]=0; // Activación por alarma programada por horario, 1=Encendido y 0=Apagado
+//Q[0]=Activación de cerradura electromagnetica
+//M[11]=Botón de activación manual
+//M[12]=Botón de desactivación manual
+
 
 
 
