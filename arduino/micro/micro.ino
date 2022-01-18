@@ -1,10 +1,18 @@
 ///////////////////Codigo de comunicacion
-#define TAMANIO_BUFFER 20
-char bufferLectura[TAMANIO_BUFFER];
+#define TAMANIO_BUFFER 100
+byte bufferLectura[TAMANIO_BUFFER];
 int indiceBuffer = 0;
+
+char caracterInicio = '{';
+char caracterFinal = '}';
 
 void leerAlmacenarSerie ();
 void decodificarInstrucion();
+
+String intruccion1 = "juan";
+
+String extraerInstruccion(byte*, int, int);
+
 
 ///////////////////Codigo para declarar pines de entrada y salida
 
@@ -164,30 +172,55 @@ void apagarAlarma (){
 void leerAlmacenarSerie () {
 
   while(Serial.available()) {
-      char caracterLeido = Serial.read();
-      //Serial.print (caracterLeido);
+      byte caracterLeido = Serial.read();
+      //Serial.write (caracterLeido);
       bufferLectura[indiceBuffer++] =  caracterLeido;
 
-      if (indiceBuffer > int( TAMANIO_BUFFER/2)){
+      if (indiceBuffer > int( TAMANIO_BUFFER-10)){
         indiceBuffer = 0;
+        // TODO: recorrer el arreglo
       }
   }
 }
 
 void decodificarInstrucion() {
- 
+  /*
   Serial.print(">");
   for(int i = 0; i< TAMANIO_BUFFER;i++){
-    Serial.print(bufferLectura[i]);
+    Serial.write(bufferLectura[i]);
   }
   Serial.print("<");
   Serial.println();
+*/
+
 
   char instrucion = 0;
+  boolean inicioDeInstruccionEncontrado = false;
+  int posicionInicio= 0;
+  int posicionFinal = 0;
+  byte * cadena;
+  String instruccionDetectada = "";
+
   
   for (int i = 0; i < indiceBuffer; i++) {
-    // buscar caracter de inicio
-    // caracter de final
+
+    if (bufferLectura[i] == caracterInicio ) {
+      //Serial.print("Se encontro el caracter de inicio en la posicion");
+      //Serial.println (i);
+      inicioDeInstruccionEncontrado = true;
+      posicionInicio = i;
+    }
+    
+    if (inicioDeInstruccionEncontrado && (bufferLectura[i] == caracterFinal) ) {
+      //Serial.print("Se encontro el caracter de final en la posicion");
+      //Serial.println (i);
+      posicionFinal = i;
+      instruccionDetectada = extraerInstruccion(bufferLectura, posicionInicio, posicionFinal);
+      indiceBuffer = 0;
+      Serial.println (instruccionDetectada);
+    }
+    
+    
     
     // extraer la cadena de texto entre esos caracteres
 
@@ -211,8 +244,24 @@ void decodificarInstrucion() {
         break;
     
     }
+
+}
+
+String extraerInstruccion(byte* bufferLectura, int posicionInicio, int posicionFinal) {
+
+  String inst = "";
+  
+  for (int i = posicionInicio; i <= posicionFinal; i++) {
+    //Serial.write(bufferLectura [i]);
+    inst += (char) bufferLectura [i];
+  }
+  //Serial.println();
+  //Serial.print (inst);
+  return inst;
+  
   
 }
+
 
 
 void funcion_1(){
