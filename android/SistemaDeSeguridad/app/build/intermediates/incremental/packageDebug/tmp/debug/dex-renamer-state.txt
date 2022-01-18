@@ -1,9 +1,9 @@
-#Wed Jan 12 23:19:00 CST 2022
-base.2=/media/sigy/DOCUMENTOS/PROYECTOS/ASESORIAS/RED DE CONTROL/tesisseguridad/android/SistemaDeSeguridad/app/build/intermediates/dex/debug/mergeProjectDexDebug/7/classes.dex
+#Mon Jan 17 21:43:04 CST 2022
+base.2=C\:\\Users\\PC\\Desktop\\sketch_dec15a\\RepositorioTesis\\tesisseguridad\\android\\SistemaDeSeguridad\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\7\\classes.dex
 path.2=7/classes.dex
-base.1=/media/sigy/DOCUMENTOS/PROYECTOS/ASESORIAS/RED DE CONTROL/tesisseguridad/android/SistemaDeSeguridad/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
+base.1=C\:\\Users\\PC\\Desktop\\sketch_dec15a\\RepositorioTesis\\tesisseguridad\\android\\SistemaDeSeguridad\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 path.1=0/classes.dex
-base.0=/media/sigy/DOCUMENTOS/PROYECTOS/ASESORIAS/RED DE CONTROL/tesisseguridad/android/SistemaDeSeguridad/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
+base.0=C\:\\Users\\PC\\Desktop\\sketch_dec15a\\RepositorioTesis\\tesisseguridad\\android\\SistemaDeSeguridad\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
