@@ -1,12 +1,15 @@
-///////////////////Codigo de comunicacion
+///////////////////Codigo de comunicacion////////////////////////////
 #define TAMANIO_BUFFER 20
 char bufferLectura[TAMANIO_BUFFER];
 int indiceBuffer = 0;
 
 void leerAlmacenarSerie ();
 void decodificarInstrucion();
-
-///////////////////Codigo para declarar pines de entrada y salida
+void actualizarPines();
+//char* enviarAlarmas();
+void apagarAlarma();
+char caracterLeido();
+///////////////////Codigo para declarar pines de entrada y salida//////
 
 int di_0=5;
 int di_1=6;
@@ -45,21 +48,19 @@ void setup() {
    /////////////////////Codigo para inicializar puertos de comunicación
    Serial.begin(9600);
 //M[1]=Identificación de entrada 1 --> Respuesta (%=Abierto y *Cerrado)
-M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
+//M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
 //M[3]=0; // 1=Encendido módo manual, 0= Apagado modo manual --> Señal de encenddido manual --> Petisión #_%1A24&
 //I0=Interruptor electromágnetico del zaguan --> *
 //M4=Encendido del sistema --> Fisico #_%1A24&
-M[5]=0; //Mensaje de activación a la aplicación
-//M[6]=Activación de alarma y mensaje a la aplicación
+//M[5]=0; //Mensaje de activación a la aplicación
+//M[6]=Activación de alarma 
+//M[7]=Mensaje de que se activo la alarma
 //M[8]=Llamada de emergencia
 //M[9]=Botón para activación de alarma programada
-M[10]=0; // Activación por alarma programada por horario, 1=Encendido y 0=Apagado
+//M[10]=0; // Activación por alarma programada por horario, 1=Encendido y 0=Apagado
 //Q[0]=Activación de cerradura electromagnetica
 //M[11]=Botón de activación manual
 //M[12]=Botón de desactivación manual
-
-
-
 
 }
 
@@ -184,25 +185,7 @@ void decodificarInstrucion() {
 
   for (int i = 0; i < indiceBuffer; i++) {
     // buscar caracter de inicio
-    // caracter de final
-    
-    // extraer la cadena de texto entre esos caracteres
-
-
-    // hacer una serie de comparaciones para obtener la instruccion
-    
-
-    switch(instruccion) {
-
-      case instruccion_1: 
-        funcion_1();
-        break;
-        
-      case instruccion_1: 
-        funcion_2();
-        break;
-    
-    }
+   Serial.print(":::::::::::::::::::::::::::");
     
   }
   
