@@ -48,7 +48,7 @@ void setup() {
    /////////////////////Codigo para inicializar puertos de comunicación
    Serial.begin(9600);
 //M[1]=Identificación de entrada 1 --> Respuesta (%=Abierto y *Cerrado)
-//M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
+M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
 //M[3]=0; // 1=Encendido módo manual, 0= Apagado modo manual --> Señal de encenddido manual --> Petisión #_%1A24&
 //I0=Interruptor electromágnetico del zaguan --> *
 //M4=Encendido del sistema --> Fisico #_%1A24&
@@ -68,13 +68,7 @@ void setup() {
 
 
 void loop() {
-     /*for(int i=0;i<6;i++){
-    Serial.print(X[i]);
-    if(i==5){
-    Serial.println();
-    }
-    Serial.write(" ,");
-     }*/
+    
 
      
     /////////////////////Codigo para comunicación
@@ -87,13 +81,18 @@ void loop() {
     M[7]=X[2];
     M[1]=X[0] & (!M[2] | M[3]);
     M[4]=(M[1] | M[4]) & !M[2] & !M[3];
-    //M[5]= M[4] & M[1];
-    M[8]=M[4] & !M[5] & !M[1] & !M[7];
-    //
+    M[5]= M[4] & M[1];
+    M[6]=!M[5] & !M[1];
+    M[8]=M[6] & !M[7];
+    //M[10]=M[9] &
+    Q[0]= !M[2] | M[3]
+    M[3]= (M[11] | M[3] | M[10]) & M[12];
+
+
     
-    if(M[4]==1){
-    Y[0]=M[8];
-    }
+    //if(M[4]==1){
+    //Y[0]=M[8];
+    //}
     
     /*
     M[4]=(M[1] | M4[4]) & !M[2] & !M[3];
