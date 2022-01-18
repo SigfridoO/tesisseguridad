@@ -1,6 +1,9 @@
 ///////////////////Codigo de comunicacion
 #define TAMANIO_BUFFER 100
 byte bufferLectura[TAMANIO_BUFFER];
+
+///////////////////Codigo de comunicacion////////////////////////////
+
 int indiceBuffer = 0;
 
 char caracterInicio = '{';
@@ -9,12 +12,17 @@ char caracterFinal = '}';
 void leerAlmacenarSerie ();
 void decodificarInstrucion();
 
-String intruccion1 = "juan";
 
+String intruccion1 = "juan";
 String extraerInstruccion(byte*, int, int);
 
 
-///////////////////Codigo para declarar pines de entrada y salida
+void actualizarPines();
+//char* enviarAlarmas();
+void apagarAlarma();
+char caracterLeido();
+///////////////////Codigo para declarar pines de entrada y salida//////
+
 
 int di_0=5;
 int di_1=6;
@@ -30,10 +38,6 @@ int do_2=13;
 byte X[8];
 byte Y[8];
 byte M[48];
-
-
-const char instrucion_1 = 'h';     // enviarTodaslas alarmas
-const char instrucion_2 = 'f';
 
 
 
@@ -61,17 +65,15 @@ M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
 //M[3]=0; // 1=Encendido módo manual, 0= Apagado modo manual --> Señal de encenddido manual --> Petisión #_%1A24&
 //I0=Interruptor electromágnetico del zaguan --> *
 //M4=Encendido del sistema --> Fisico #_%1A24&
-M[5]=0; //Mensaje de activación a la aplicación
-//M[6]=Activación de alarma y mensaje a la aplicación
+//M[5]=0; //Mensaje de activación a la aplicación
+//M[6]=Activación de alarma 
+//M[7]=Mensaje de que se activo la alarma
 //M[8]=Llamada de emergencia
 //M[9]=Botón para activación de alarma programada
-M[10]=0; // Activación por alarma programada por horario, 1=Encendido y 0=Apagado
+//M[10]=0; // Activación por alarma programada por horario, 1=Encendido y 0=Apagado
 //Q[0]=Activación de cerradura electromagnetica
 //M[11]=Botón de activación manual
 //M[12]=Botón de desactivación manual
-
-
-
 
 }
 
@@ -79,13 +81,7 @@ M[10]=0; // Activación por alarma programada por horario, 1=Encendido y 0=Apaga
 
 
 void loop() {
-     /*for(int i=0;i<6;i++){
-    Serial.print(X[i]);
-    if(i==5){
-    Serial.println();
-    }
-    Serial.write(" ,");
-     }*/
+    
 
      
     /////////////////////Codigo para comunicación
@@ -98,13 +94,18 @@ void loop() {
     M[7]=X[2];
     M[1]=X[0] & (!M[2] | M[3]);
     M[4]=(M[1] | M[4]) & !M[2] & !M[3];
-    //M[5]= M[4] & M[1];
-    M[8]=M[4] & !M[5] & !M[1] & !M[7];
-    //
+    M[5]= M[4] & M[1];
+    M[6]=!M[5] & !M[1];
+    M[8]=M[6] & !M[7];
+    //M[10]=M[9] &
+    Y[0]= !M[2] | M[3];
+    M[3]= (M[11] | M[3] | M[10]) & M[12];
+
+
     
-    if(M[4]==1){
-    Y[0]=M[8];
-    }
+    //if(M[4]==1){
+    //Y[0]=M[8];
+    //}
     
     /*
     M[4]=(M[1] | M4[4]) & !M[2] & !M[3];
@@ -184,8 +185,11 @@ void leerAlmacenarSerie () {
 }
 
 void decodificarInstrucion() {
+
   /*
-  Serial.print(">");
+ 
+    Serial.print(">");
+
   for(int i = 0; i< TAMANIO_BUFFER;i++){
     Serial.write(bufferLectura[i]);
   }
@@ -232,7 +236,7 @@ void decodificarInstrucion() {
     
   }
 
-
+  /*
      switch(instrucion) {
 
       case instrucion_1: 
@@ -244,7 +248,7 @@ void decodificarInstrucion() {
         break;
     
     }
-
+*/
 }
 
 String extraerInstruccion(byte* bufferLectura, int posicionInicio, int posicionFinal) {
@@ -271,6 +275,12 @@ void funcion_1(){
 
 
 void funcion_2(){
+
+  for (int i = 0; i < indiceBuffer; i++) {
+    // buscar caracter de inicio
+   Serial.print(":::::::::::::::::::::::::::");
+    
+  }
+
   
-;
 }
