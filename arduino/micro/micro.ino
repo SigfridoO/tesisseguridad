@@ -1,29 +1,55 @@
-///////////////////Codigo de comunicacion
-#define TAMANIO_BUFFER 100
-byte bufferLectura[TAMANIO_BUFFER];
-
 ///////////////////Codigo de comunicacion////////////////////////////
+#define TAMANIO_BUFFER 100
+
+
+// Instrucciones envidas desde android a arduino
+#define ACTIVACION_MANUAL "1B11"                  //-> activar bandera M[4]         ->
+#define DESACTIVACION_MANUAL "1B11"               //-> desactivar bandera M[4]
+#define SENIAL_GPS_ACTIVA "1B11"                  //-> activar gps M[4]
+#define SENIAL_GPS_DESACTIVA "1B11"               //-> desactivar bandera M[4]
+
+
+// caracterInicial + instruccion + datos + caracterFinal
+#define ENVIAR_SENIALES "1212"                    //                                -> REGRESAR EL ESTADO DE LAS SEÑALES POR EL PUERTO SERIE
+
+// Respuesta del arduino hacia android
+#define RESPUESTA_ENVIAR_SENIALES "1434"          //                                -> construye la respuesta #1434000000111000000&
+
+
+byte bufferLectura[TAMANIO_BUFFER];
 
 int indiceBuffer = 0;
 
-char caracterInicio = '{';
-char caracterFinal = '}';
+char caracterInicio = '#';
+char caracterFinal = '&';
+
+//////////////////////////////Funciones de usuario//////////////
 
 void leerAlmacenarSerie ();
 void decodificarInstrucion();
 
+int senialGPS0();
+int senialGPS1();
+int activManual();
+int desactivManual();
+/*
+char P1A(String);
+char P1B(String);
+char P2A(String);
+char P2B(String);
+char P3A(String);
+char P3B(String);
+char P4A(String);
+char P4B(String);
+char P5F(String);*/
 
-String intruccion1 = "juan";
 String extraerInstruccion(byte*, int, int);
 
-
 void actualizarPines();
-//char* enviarAlarmas();
 void apagarAlarma();
 char caracterLeido();
+
 ///////////////////Codigo para declarar pines de entrada y salida//////
-
-
 int di_0=5;
 int di_1=6;
 int di_2=7;
@@ -40,8 +66,6 @@ byte Y[8];
 byte M[48];
 
 
-
-//SOLO UNA EJECUCIÓN
 void setup() {
   // Definir pines de entrada y salida
 
@@ -56,9 +80,10 @@ void setup() {
   pinMode(do_1, OUTPUT);
   pinMode(do_2, OUTPUT);
 
+String envioMensaje= "#1A";
 
 
-   /////////////////////Codigo para inicializar puertos de comunicación
+/////////////////////Codigo para inicializar puertos de comunicación
    Serial.begin(9600);
 //M[1]=Identificación de entrada 1 --> Respuesta (%=Abierto y *Cerrado)
 M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
@@ -73,68 +98,158 @@ M[2]=0; // 0=Usuario fuera, 1=Usuario dentro --> Señal GPS ()
 //M[10]=0; // Activación por alarma programada por horario, 1=Encendido y 0=Apagado
 //Q[0]=Activación de cerradura electromagnetica
 //M[11]=Botón de activación manual
-//M[12]=Botón de desactivación manual
-
+M[12]=0; //Botón de desactivación manual
 }
 
 
-
-
 void loop() {
-    
-
      
-    /////////////////////Codigo para comunicación
+/////////////////////Codigo para comunicación/////////////////////////
     leerAlmacenarSerie();
     decodificarInstrucion();
+
+    //String envioMensaje= "#1A";
+
+/////////////////////Codigo para control del programa////////////////
     
-    /////////////////////Codigo para control del programa
-    
-    M[3]=X[1];
-    M[7]=X[2];
-    M[1]=X[0] & (!M[2] | M[3]);
-    M[4]=(M[1] | M[4]) & !M[2] & !M[3];
+    M[1]=(X[0] & !M[2] ) | (X[0] & M[3]);
+    M[4]=((M[1] | M[4]) & !M[2]) | ((M[1] | M[4]) & M[3]);
     M[5]= M[4] & M[1];
     M[6]=!M[5] & !M[1];
     M[8]=M[6] & !M[7];
     //M[10]=M[9] &
-    Y[0]= !M[2] | M[3];
-    M[3]= (M[11] | M[3] | M[10]) & M[12];
+    Y[0]=M[4] & (!M[2] | M[3]);
+    M[3]= (M[11] | (M[3] && !M[10]) | M[10]) & !M[12];
 
+    String envioMensaje="#1A";    
 
-    
-    //if(M[4]==1){
-    //Y[0]=M[8];
-    //}
-    
-    /*
-    M[4]=(M[1] | M4[4]) & !M[2] & !M[3];
-    //Contador
-    if(i>=1){
-    M[6]= !M[5] & !M[1];
-    }
-    M[8]=M[6] & !M[7];
-    //M[10]= TOF1.Q
-    Q[0]= !M[2] | M[3];
-    M[3]= (M[11] | M[3] | M[10]) & !M[12];*/
-    
-    
-//    Serial.print(" X[0]= ");
-//    Serial.print(X[0]);
-//    Serial.print(" M[1]= ");
-//    Serial.print(M[1]);
-//    Serial.print(" M[4]= ");
-//    Serial.print(M[4]);
-//    Serial.print(" M[6]= ");
-//    Serial.print(M[6]);
-//    Serial.println();
-    
+/////////////////Mensajes de información del sistema/////////////
+      
+    Serial.print(" X[0]= ");
+    Serial.print(X[0]);
+    Serial.println();
 
+///////////////Secuencia de funcionamiento////////////////////
 
-    //////////// Actualización de las entradas y salidas
-    actualizarPines();
+if(M[1] == 1 && M[4] == 1){
+    //Serial.print("Zaguan Cerrado"); // #1A15&  
+    //Serial.println();
+    P1A(envioMensaje);
+    Serial.print("Desde loop k vale: ");
+    Serial.println (envioMensaje);      
+}
 
-    
+if(M[1] == 0 && M[4] == 1){
+    //Serial.print("Zaguan Abierto"); // #0A15&
+    //Serial.println();
+    P1B(envioMensaje);
+}
+
+/*if(M[4] == 1){
+    Serial.print("Sistema Activado"); 
+    Serial.println();    
+}*/
+
+if(M[5] == 1 && M[4] == 1){
+    //Serial.print("Lugar Asegurado"); // #1A054& 
+    //Serial.println();
+    P2A(envioMensaje);
+}
+
+if(M[5] == 0 && M[4] == 1){
+    //Serial.print("Lugar Inseguro"); // #0A054& 
+    //Serial.println();
+    P2B(envioMensaje);
+}
+
+if(M[6] == 1 && M[4] == 1){
+    //Serial.print("Sistema violentado"); // #1A064&
+    //Serial.println();
+    P3A(envioMensaje);    
+}
+
+/*if(M[8] == 1 && M[4] == 1){
+    Serial.print("Llamada en curso"); // #1A084& 
+    Serial.println();  
+}*/
+
+if(Y[0] == 1 && M[4] == 1){
+    //Serial.print("Cerradura Zaguan activada"); // #1Y014&
+    //Serial.println();
+    P4A(envioMensaje);
+}
+if(Y[0] == 1 && M[4] == 1){
+    //Serial.print("Cerradura Zaguan activada"); // #1Y014&
+    //Serial.println();
+    P4B(envioMensaje);
+}
+/*if(M[3] == 1 && M[11] == 1){
+    //Serial.print("Activado manualmente"); // #1B114& 
+    //Serial.println();  
+}*/
+
+/*if(M[3] == 0 && M[12] == 1){
+    //Serial.print("desactivado manualmente");  // #1B124&
+    //Serial.println();  
+}*/
+
+/*if(M[3] == 1 && M[10] == 1){
+    //Serial.print("Acivación por horario"); // #1B104&
+    //Serial.println();  
+}*/
+//char li= envioMensaje[8];
+ /* P1A(envioMensaje);
+  P1B(envioMensaje);
+  P2A(envioMensaje);
+  P2B(envioMensaje);
+  P3A(envioMensaje);
+  P3B(envioMensaje);
+  P4A(envioMensaje);
+  P4B(envioMensaje);*/
+  P5F(envioMensaje);
+  Serial.println("...................................");    
+//////////// Actualización de las entradas y salidas////////////////
+    actualizarPines();    
+
+}
+/////////////////////Creación del Mensaje//////////////////////////
+
+char P1A(String envioMensaje){  
+  envioMensaje.concat('1');
+}
+
+char P1B(String envioMensaje){  
+  envioMensaje.concat('0');
+}
+
+char P2A(String envioMensaje){
+  envioMensaje.concat('1');
+}
+
+char P2B(String envioMensaje){  
+  envioMensaje.concat('0');
+}
+
+char P3A(String envioMensaje){
+  envioMensaje.concat('1');
+}
+
+char P3B(String envioMensaje){  
+  envioMensaje.concat('0');
+}
+
+char P4A(String envioMensaje){
+  envioMensaje.concat('1');
+}
+
+char P4B(String envioMensaje){  
+  envioMensaje.concat('0');
+}
+
+char P5F(String envioMensaje){
+  envioMensaje.concat('&');     
+  Serial.print("Desde la funcion k1 vale: ");
+  Serial.println (envioMensaje);
 }
 
 
@@ -154,9 +269,9 @@ void actualizarPines(){
     //Serial.print ("\t" );
 }
 
-
-
 char* enviarAlarmas(){
+    
+
     
     char Mensaje[64];
     return Mensaje;
@@ -165,7 +280,7 @@ char* enviarAlarmas(){
 
 void apagarAlarma (){
 
-  M[3]=1;
+  //M[3]=1;
 
 }
 
@@ -186,18 +301,6 @@ void leerAlmacenarSerie () {
 
 void decodificarInstrucion() {
 
-  /*
- 
-    Serial.print(">");
-
-  for(int i = 0; i< TAMANIO_BUFFER;i++){
-    Serial.write(bufferLectura[i]);
-  }
-  Serial.print("<");
-  Serial.println();
-*/
-
-
   char instrucion = 0;
   boolean inicioDeInstruccionEncontrado = false;
   int posicionInicio= 0;
@@ -205,7 +308,6 @@ void decodificarInstrucion() {
   byte * cadena;
   String instruccionDetectada = "";
 
-  
   for (int i = 0; i < indiceBuffer; i++) {
 
     if (bufferLectura[i] == caracterInicio ) {
@@ -220,8 +322,16 @@ void decodificarInstrucion() {
       //Serial.println (i);
       posicionFinal = i;
       instruccionDetectada = extraerInstruccion(bufferLectura, posicionInicio, posicionFinal);
+      seleccionarInstruccion(instruccionDetectada);
+
+
+      
+      
       indiceBuffer = 0;
       Serial.println (instruccionDetectada);
+
+
+      
     }
     
     
@@ -235,20 +345,6 @@ void decodificarInstrucion() {
     instrucion = 'h';
     
   }
-
-  /*
-     switch(instrucion) {
-
-      case instrucion_1: 
-        funcion_1();
-        break;
-        
-      case instrucion_2: 
-        funcion_2();
-        break;
-    
-    }
-*/
 }
 
 String extraerInstruccion(byte* bufferLectura, int posicionInicio, int posicionFinal) {
@@ -259,28 +355,143 @@ String extraerInstruccion(byte* bufferLectura, int posicionInicio, int posicionF
     //Serial.write(bufferLectura [i]);
     inst += (char) bufferLectura [i];
   }
-  //Serial.println();
-  //Serial.print (inst);
-  return inst;
-  
-  
+
+
+ return inst;
 }
 
 
 
-void funcion_1(){
+
+
+void seleccionarInstruccion (String cadena) {  
+  // caracterInicial + instruccion + datos + tamanio + codigo de verificacion de error + caracterFinal
+  // caracterInicial + instruccion + datos + caracterFinal
+
+
+  // inst : String  
+
+    instruccion = cadena.substring(1, 4);
+    datos = cadena.substring(4, cadena.length())
+    String resp = '';
+
+    switch (instruccion) {
+       case ACTIVACION_MANUAL:
+
+            break;
+       
+       case DESACTIVACION_MANUAL:
+
+            break;
+
+       case ACTIVACION_MANUAL:
+            senialGPS(1);
+            break;
+       
+       case DESACTIVACION_MANUAL:
+            senialGPS(0);
+            break;
+
+       
+       case ENVIAR_SENIALES:
+            resp = enviarSeniales();
+            Serial.print(resp)
+            break;
+      
+    }
   
-;
-}
-
-
-void funcion_2(){
-
-  for (int i = 0; i < indiceBuffer; i++) {
-    // buscar caracter de inicio
-   Serial.print(":::::::::::::::::::::::::::");
+    Serial.print("Instruccion:");
+    Serial.print(inst);
+    Serial.println();
     
-  }
+    //char tamanioInstrucción(String inst)
+    char ti= inst[6];
+    char i1= inst[3];
+    char i2= inst[4];
+    char i3= inst[5];
+    
+    if(ti=='6'){
+        Serial.println("Instrucción completa");
+    }
+    
+    if(ti=='6' && i1=='0'){
+        senialGPS0();
+    }
+    
+    if(ti=='6' && i1=='1'){
+        senialGPS1();
+    }
+    
+    if(ti=='6' && i2=='0'){
+        activManual0(); 
+    }
+    
+    if(ti=='6' && i2=='1'){
+       activManual1();
+    }
+    
+    if(ti=='6' && i3=='0'){
+        desactivManual0();
+    }
+    
+    if(ti=='6' && i3=='1'){
+        desactivManual1();
+    }
+    
+    if(ti=='6' && i3=='0'){
+        desactivManual0();
+    }
+    
+    if(ti=='6' && i3=='1'){
+        desactivManual1();
+    }
+    //delay(2000);
+  
+  
+}
+
+String enviarSeniales() {
+    String respuesta = "";
+
+    respuesta.concat(caracterInicial)
+    respuesta.concat(RESPUESTA_ENVIAR_SENIALES);
+  
+    for(int i=0;i<6;i++){
+      respuesta.concat(String( (X[i]))
+     }
 
   
+    for(int i=0;i<3;i++){
+      respuesta.concat('0' + (Y[i]))
+     }
+
+    respuesta.concat(caracterFinal)
+  
+  return respuesta;
+}
+
+
+int senialGPS(int valor){
+  M[2]=valor;
+}
+
+
+
+
+
+int activManual0(){
+  M[11]=0;
+}
+
+
+int activManual1(){
+  M[11]=1;
+}
+
+int desactivManual0(){
+  M[12]=0;
+}
+
+int desactivManual1(){
+  M[12]=1;
 }
